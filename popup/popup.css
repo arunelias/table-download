@@ -1,0 +1,34 @@
+body {
+    font-family: 'Segoe UI', 'San Francisco', 'Ubuntu', sans-serif;
+    background: #f9f9fa;
+}
+tr {
+	background: #fff;
+}
+th, td {
+	padding: 0px 20px !important;
+}
+td.highlight, td.download {text-align: center;}
+button {
+	border:none !important;
+	outline:none !important;
+}
+button.highlight {
+	background-image: url( '../assets/popup/Search.svg' );
+    background-size: 16px 16px;
+    height: 16px;  
+    width: 16px;
+}
+button.download {
+	background-image: url( '../assets/popup/Download.svg' );
+    background-size: 16px 16px;
+    height: 16px;  
+    width: 16px;
+}
+button.close::before { content: "\000D7" }
+#table-list {
+	display: none;
+}
+#no-tables {
+	display: none;
+}

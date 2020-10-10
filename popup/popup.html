@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="../assets/icon/icon.png">
+    <title>Pop-up</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css">
+    <!-- Custom styles for this template -->
+    <link href="popup.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container-fluid">
+      <!-- Settings Row -->
+      <div class="row">
+        <div class="col-12 text-right"><button id="close" type="button" class="close m-1" aria-label="Close" title="Close Pop-up"></button></div>
+      </div>
+      <!-- Table List Row -->
+      <div class="row">
+        <div class="col-12">
+          <div id="no-tables" class="alert alert-info" data-translate="noTablesInfo">No Tables!</div>
+          <table id="table-list" class="table table-hover table-sm small">
+            <thead>
+              <tr>
+                <th class="col-10 text-left">Table Name</th>
+                <th class="col-1 text-middle">Highlight</th>
+                <th class="col-1 text-middle">Download</th>
+              </tr>
+            </thead>
+            <tbody id="table-list-body">
+              <tr>
+                <td class="table-name-td">Table-1</td>
+                <td class="highlight"><button id="highlight" type="button" class="highlight" title="Highlight Table"></button></td>
+                <td class="download"><button id="download" type="button" class="download" title="Download Table"></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    <!-- Custom JavaScript -->
+    <script src="/translate.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

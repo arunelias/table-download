@@ -1,0 +1,26 @@
+{
+  "extensionName": {
+    "message": "Descarga de tabla",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Descargar tablas HTML de páginas en formato de hoja de cálculo",
+    "description": "Description of the extension."
+  },
+  "noTablesInfo": {
+    "message": "¡No hay tablas!",
+    "description": "No Tables info message."
+  },
+  "tdTableName": {
+    "message": "Nombre de la tabla",
+    "description": "Table Heading - Table Name"
+  },
+  "tdTableHighlight": {
+    "message": "Resaltar",
+    "description": "Table Heading - Table Highlight"
+  },
+  "tdTableDownload": {
+    "message": "Descargar",
+    "description": "Table Heading - Table Download"
+  }
+}

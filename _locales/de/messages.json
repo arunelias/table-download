@@ -1,0 +1,26 @@
+{
+  "extensionName": {
+    "message": "Tafel downloaden",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "HTML-tabellen downloaden van pagina's in spreadsheet-indeling",
+    "description": "Description of the extension."
+  },
+  "noTablesInfo": {
+    "message": "Geen tabellen!",
+    "description": "No Tables info message."
+  },
+  "tdTableName": {
+    "message": "Tafelnaam",
+    "description": "Table Heading - Table Name"
+  },
+  "tdTableHighlight": {
+    "message": "Markeer",
+    "description": "Table Heading - Table Highlight"
+  },
+  "tdTableDownload": {
+    "message": "Downloaden",
+    "description": "Table Heading - Table Download"
+  }
+}

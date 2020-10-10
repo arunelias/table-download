@@ -1,0 +1,26 @@
+{
+  "extensionName": {
+    "message": "Table Download",
+    "description": "Name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Download HTML Tables from pages in spreadsheet format",
+    "description": "Description of the extension."
+  },
+  "noTablesInfo": {
+    "message": "No Tables!",
+    "description": "No Tables info message."
+  },
+  "tdTableName": {
+    "message": "Table Name",
+    "description": "Table Heading - Table Name"
+  },
+  "tdTableHighlight": {
+    "message": "Highlight",
+    "description": "Table Heading - Table Highlight"
+  },
+  "tdTableDownload": {
+    "message": "Download",
+    "description": "Table Heading - Table Download"
+  }
+}
