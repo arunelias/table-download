@@ -2,6 +2,11 @@
 var tableList = document.getElementById('table-list');
 var tableListingNode = document.getElementById('table-list-body');
 var noTables = document.getElementById('no-tables');
+var tabId;
+// Error handler
+function onError(error) {
+  console.error(`Error: ${error}`);
+}
 /*
  * Add Event Listner for Close button
 */
@@ -14,7 +19,8 @@ document.getElementById('close').addEventListener('click', function(){
  * @param {index} index of Table
  */
 function highlightTableByIndex(index) { //Request Table Highlight to Background script
-  browser.runtime.sendMessage({event: "Request-Table-Highlight", tableIndex: index});
+  // browser.runtime.sendMessage({event: "Request-Table-Highlight", tableIndex: index});
+  browser.tabs.sendMessage(tabId, { event: "table-highlight", tableIndex: index }).then(handleMessage).catch(onError);
 }
 /*
  * Download Table by (index)
@@ -22,10 +28,11 @@ function highlightTableByIndex(index) { //Request Table Highlight to Background 
  * @param {index} index of Table
  */
 function downloadTableByIndex(index) {//Request Table Download to Background script
-  browser.runtime.sendMessage({event: "Request-Table-Download", tableIndex: index});
+  // browser.runtime.sendMessage({event: "Request-Table-Download", tableIndex: index});
+  browser.tabs.sendMessage(tabId, { event: "table-download", tableIndex: index }).then(handleMessage).catch(onError);
 }
 /*
- * Handle Table list message from Background Script
+ * Handle Table list message from Content Script
  *
  * @param {tableArray} tableArray Array of table Names 
 */
@@ -84,13 +91,13 @@ function handleTableList(tableArray) {
 /*
  * Handle Messages from Other Scripts
  *
- * @param {request} Request Event, Request Rule id, Ajax Status and Tab Ajax Response URL
- * @param {sender} Tabs.tab Object, 
+ * @param {request} Request Event
+ * @param {sender} A runtime.MessageSender object representing the sender of the message.
  * @param {sendResponse} Response message object
 */
 function handleMessage(request, sender, sendResponse) {
-  console.log("Background Scripts => Popup Script: Event: " + request.event );
-  if(request.event == "table-list") { // Got Table List from Background script
+  console.log("Content Scripts => Popup Script: Event: " + request.event );
+  if(request.event == "table-list") { // Got Table List from Content script
     handleTableList(request.tableArray);
   }
 }
@@ -100,7 +107,31 @@ function handleMessage(request, sender, sendResponse) {
 */
 function initPopup() {
   // Request Table List to Background script
-  browser.runtime.sendMessage({event: "Request-Table-List"});
+  // browser.runtime.sendMessage({event: "Request-Table-List"});
+  // Query the active tab and get table list from content script
+  browser.tabs.query({ currentWindow: true, active: true })
+    .then((tabs) => {
+      tabId = tabs[0].id;
+      browser.tabs.sendMessage(
+        tabId,
+        { event: "get-table-list" }
+      ).then(handleMessage).catch(() => {
+        // Content Script does not exists. Inject the content scripts
+        browser.tabs.executeScript({file: "/inject/purify.min.js"})
+          .then(() => {
+            browser.tabs.executeScript({file: "/inject/cs.js"})
+            .then(() => {
+              // Retry the Query the active tab and get table list from content script
+              browser.tabs.sendMessage(
+                tabId,
+                { event: "get-table-list" }
+              ).then(handleMessage).catch(onError);
+            });
+          })
+          .catch(onError);
+      });
+    })
+    .catch(onError);
   // Display Table
   tableList.style.display = "none";
   // Display Table
@@ -111,6 +142,6 @@ function initPopup() {
 /*
 ** Add Listener to Handle the message from Content Script
 */
-browser.runtime.onMessage.addListener(handleMessage);
+// browser.runtime.onMessage.addListener(handleMessage);
 // Call Initialize
 initPopup();
