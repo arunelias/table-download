@@ -50,7 +50,8 @@
 					var tableHtml = DOMPurify.sanitize(dirtyHtml);
 					var excelHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta charset="utf-8"/><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Worksheet</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>${tableHtml}</table></body></html>`;
 					var blob = new Blob([excelHtml], {type: "application/vnd.ms-excel;charset=utf-8"});
-					var url = window.URL.createObjectURL(blob);
+					var file = new File([blob], "table.xls", {type: "application/vnd.ms-excel;charset=utf-8"})
+					var url = window.URL.createObjectURL(file);
 					window.location = url;
 					window.URL.revokeObjectURL(url);
 				}
