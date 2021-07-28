@@ -15,7 +15,7 @@
         "activeTab"
     ],
     "browser_action":{
-        "default_icon": "assets/icon/icon.svg",
+        "default_icon": "assets/icon/icon.png",
         "default_title": "Table Download",
         "default_popup": "popup/popup.html"
     },

@@ -24,6 +24,8 @@ SOFTWARE.
 /*
 https://github.com/christiankaindl/trello-super-powers/blob/master/translate.js
 */
+// Chrome/ Firefox detection
+// const isChrome = typeof browser === "undefined" || Object.getPrototypeOf(browser) !== Object.prototype;
 /**
 * Translate an HTML page with the i18n API
 *
@@ -34,6 +36,7 @@ function translate(property = 'data-translate') {
 
   for (let i = 0; i < translateables.length; i++) {
     let string = translateables[i].getAttribute(property);
-    translateables[i].textContent = browser.i18n.getMessage(string);
+    if (isChrome) { translateables[i].textContent = chrome.i18n.getMessage(string); }
+    else { translateables[i].textContent = browser.i18n.getMessage(string); }
   }
 }

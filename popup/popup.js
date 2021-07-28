@@ -3,6 +3,7 @@ var tableList = document.getElementById('table-list');
 var tableListingNode = document.getElementById('table-list-body');
 var noTables = document.getElementById('no-tables');
 var tabId;
+const isChrome = typeof browser === "undefined" || Object.getPrototypeOf(browser) !== Object.prototype;
 // Error handler
 function onError(error) {
   console.error(`Error: ${error}`);
@@ -14,13 +15,55 @@ document.getElementById('close').addEventListener('click', function(){
     window.close();
 });
 /*
+ * chrome.tabs.sendMessage wrapper function with Promise
+*/
+function sendMessageWithPromise(tabId, message) {
+  if (!isChrome) return browser.tabs.sendMessage(tabId, message);
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.tabs.sendMessage(tabId, message, function(response) {
+        if (!response) reject(JSON.stringify(chrome.runtime.lastError));
+        else if (response.event) resolve(response);
+        else reject("Error in the response of sendMessage!");
+      });
+    } catch (error) { reject(error); }
+  });
+}
+/*
+ * chrome.tabs.query wrapper function with Promise
+*/
+function tabsQueryWithPromise(query) {
+  if (!isChrome) return browser.tabs.query(query);
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.tabs.query(query, function(tabs) {
+        if (chrome.runtime.lastError) reject(JSON.stringify(chrome.runtime.lastError));
+        else resolve(tabs);
+        });
+    } catch (error) { reject(error); }
+  });
+}
+/*
+ * chrome.tabs.executeScript wrapper function with Promise
+*/
+function executeScriptWithPromise(details) {
+  if (!isChrome) return browser.tabs.executeScript(details);
+  return new Promise(function(resolve, reject) {
+    try {
+      chrome.tabs.executeScript(details, function(results) {
+        if (chrome.runtime.lastError) reject(JSON.stringify(chrome.runtime.lastError));
+        else resolve(results);
+        });
+    } catch (error) { reject(error); }
+  });
+}
+/*
  * Highlight Table by (index)
  *
  * @param {index} index of Table
  */
 function highlightTableByIndex(index) { //Request Table Highlight to Background script
-  // browser.runtime.sendMessage({event: "Request-Table-Highlight", tableIndex: index});
-  browser.tabs.sendMessage(tabId, { event: "table-highlight", tableIndex: index }).then(handleMessage).catch(onError);
+  sendMessageWithPromise(tabId, { event: "table-highlight", tableIndex: index }).then(handleMessage).catch(onError);
 }
 /*
  * Download Table by (index)
@@ -28,8 +71,7 @@ function highlightTableByIndex(index) { //Request Table Highlight to Background 
  * @param {index} index of Table
  */
 function downloadTableByIndex(index) {//Request Table Download to Background script
-  // browser.runtime.sendMessage({event: "Request-Table-Download", tableIndex: index});
-  browser.tabs.sendMessage(tabId, { event: "table-download", tableIndex: index }).then(handleMessage).catch(onError);
+  sendMessageWithPromise(tabId, { event: "table-download", tableIndex: index }).then(handleMessage).catch(onError);
 }
 /*
  * Handle Table list message from Content Script
@@ -82,9 +124,8 @@ function handleTableList(tableArray) {
       tableListingNode.appendChild(tableRow);
     });
   } else {
-    // Display Table
+    // Display No Tables message by default
     tableList.style.display = "none";
-    // Display Table
     noTables.style.display = "block";
   }
 }
@@ -102,46 +143,46 @@ function handleMessage(request, sender, sendResponse) {
   }
 }
 /*
+ * Send the message to Content Script to get the table list
+ *
+ * @param {tabs} Active Tab from tabs query
+*/
+function getTableList(tabs) {
+  tabId = tabs[0].id;
+  message = { "event": "get-table-list" };
+  sendMessageWithPromise(
+    tabId,
+    message
+  ).then(handleMessage).catch(() => {
+    // Content Script does not exists. Inject the content scripts
+    executeScriptWithPromise({file: "/inject/purify.min.js"})
+      .then(() => {
+        executeScriptWithPromise({file: "/inject/cs.js"})
+        .then(() => {
+          // Retry the Query the active tab and get table list from content script
+          sendMessageWithPromise(
+            tabId,
+            message
+          ).then(handleMessage).catch(onError);
+        });
+      })
+      .catch(onError);
+  });
+}
+/*
  * Popup Script initialize
  * @param {} nil 
 */
 function initPopup() {
-  // Request Table List to Background script
-  // browser.runtime.sendMessage({event: "Request-Table-List"});
-  // Query the active tab and get table list from content script
-  browser.tabs.query({ currentWindow: true, active: true })
-    .then((tabs) => {
-      tabId = tabs[0].id;
-      browser.tabs.sendMessage(
-        tabId,
-        { event: "get-table-list" }
-      ).then(handleMessage).catch(() => {
-        // Content Script does not exists. Inject the content scripts
-        browser.tabs.executeScript({file: "/inject/purify.min.js"})
-          .then(() => {
-            browser.tabs.executeScript({file: "/inject/cs.js"})
-            .then(() => {
-              // Retry the Query the active tab and get table list from content script
-              browser.tabs.sendMessage(
-                tabId,
-                { event: "get-table-list" }
-              ).then(handleMessage).catch(onError);
-            });
-          })
-          .catch(onError);
-      });
-    })
+  // Query the Active Tab to Inject Content script
+  tabsQueryWithPromise({ currentWindow: true, active: true })
+    .then(getTableList)
     .catch(onError);
-  // Display Table
+  // Display No Tables message by default
   tableList.style.display = "none";
-  // Display Table
   noTables.style.display = "block";
   // Call Translate
   translate();
 }
-/*
-** Add Listener to Handle the message from Content Script
-*/
-// browser.runtime.onMessage.addListener(handleMessage);
 // Call Initialize
 initPopup();
