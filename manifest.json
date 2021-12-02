@@ -2,14 +2,13 @@
     "manifest_version": 2,
     "name": "__MSG_extensionName__",
     "description": "__MSG_extensionDescription__",
-    "version": "1.3",
+    "version": "1.5",
     "homepage_url": "https://github.com/arunelias/table-download",
     "icons": {
-        "16": "assets/icon/icon.svg",
-        "32": "assets/icon/icon.svg",
-        "48": "assets/icon/icon.svg",
-        "64": "assets/icon/icon.svg",
-        "128": "assets/icon/icon.svg"
+        "16": "assets/icon/icon.png",
+        "32": "assets/icon/icon.png",
+        "48": "assets/icon/icon.png",
+        "64": "assets/icon/icon.png"
     },
     "permissions": [
         "activeTab"

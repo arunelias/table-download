@@ -15,8 +15,8 @@
 	 * Return Table list or perform Highlight or Download
 	 */  
 	// Switch Namespace for Chrome/ Firefox compatibility
-	// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	// browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		console.log("In content script, received message from pop-up script: " + message.event);
 		switch (message.event) { // switch Case for Message Event
 			// Table List requested from Pop-up

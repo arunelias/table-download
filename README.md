@@ -3,11 +3,15 @@
 # Table Download
 This add-on is used to download HTML tables from webpages as XLS file.
 
-Install from the [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/) website.
+Install from the [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/table-download/) [Chrome Web Store](https://chrome.google.com/webstore/detail/fgbeljjpgojmkhficlfdeclfmfmgkahp)
 
 ### Purpose
 
 Download HTML table as XLS file
+
+Download HTML Tables from pages in spreadsheet format XLS.
+The data is copied in raw HTML format and a warning will be displayed while opening the file.
+HTML code is sanitized using [DOMPurify](https://github.com/cure53/DOMPurify) library. DOMPurify will strip out everything that contains dangerous HTML and thereby prevent XSS attacks and other nastiness.
 
 ### Contents
 
@@ -24,6 +28,7 @@ Download HTML table as XLS file
 
 ## Browser compatibility:
 <img title="Firefox" src="readme-resources/browsers/firefox.png" style="width: 64px;"/>
+<img title="Chrome" src="readme-resources/browsers/chrome.png" style="width: 64px;"/>
 
 ## What's next 
 
