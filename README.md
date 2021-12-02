@@ -3,7 +3,7 @@
 # Table Download
 This add-on is used to download HTML tables from webpages as XLS file.
 
-Install from the [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/table-download/) [Chrome Web Store](https://chrome.google.com/webstore/detail/fgbeljjpgojmkhficlfdeclfmfmgkahp)
+Install from the [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/table-download/) or [Chrome Web Store](https://chrome.google.com/webstore/detail/fgbeljjpgojmkhficlfdeclfmfmgkahp)
 
 ### Purpose
 
@@ -27,8 +27,7 @@ HTML code is sanitized using [DOMPurify](https://github.com/cure53/DOMPurify) li
 - Go to [`about:debugging`](https://developer.mozilla.org/en-US/docs/Tools/about:debugging) and load it as temporary extension
 
 ## Browser compatibility:
-<img title="Firefox" src="readme-resources/browsers/firefox.png" style="width: 64px;"/>
-<img title="Chrome" src="readme-resources/browsers/chrome.png" style="width: 64px;"/>
+<img title="Firefox" src="readme-resources/browsers/firefox.png" style="width: 64px;"/>&nbsp;<img title="Chrome" src="readme-resources/browsers/chrome.png" style="width: 64px;"/>
 
 ## What's next 
 
