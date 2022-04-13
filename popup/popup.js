@@ -16,46 +16,27 @@ document.getElementById('close').addEventListener('click', function(){
 });
 /*
  * chrome.tabs.sendMessage wrapper function with Promise
+ * Manifest v3 supports Promise
 */
 function sendMessageWithPromise(tabId, message) {
   if (!isChrome) return browser.tabs.sendMessage(tabId, message);
-  return new Promise(function(resolve, reject) {
-    try {
-      chrome.tabs.sendMessage(tabId, message, function(response) {
-        if (!response) reject(JSON.stringify(chrome.runtime.lastError));
-        else if (response.event) resolve(response);
-        else reject("Error in the response of sendMessage!");
-      });
-    } catch (error) { reject(error); }
-  });
+  else return chrome.tabs.sendMessage(tabId, message);
 }
 /*
  * chrome.tabs.query wrapper function with Promise
+ * Manifest v3 supports Promise
 */
 function tabsQueryWithPromise(query) {
   if (!isChrome) return browser.tabs.query(query);
-  return new Promise(function(resolve, reject) {
-    try {
-      chrome.tabs.query(query, function(tabs) {
-        if (chrome.runtime.lastError) reject(JSON.stringify(chrome.runtime.lastError));
-        else resolve(tabs);
-        });
-    } catch (error) { reject(error); }
-  });
+  else return chrome.tabs.query(query);
 }
 /*
  * chrome.tabs.executeScript wrapper function with Promise
+ * Manifest v3 supports Promise
 */
 function executeScriptWithPromise(details) {
-  if (!isChrome) return browser.tabs.executeScript(details);
-  return new Promise(function(resolve, reject) {
-    try {
-      chrome.tabs.executeScript(details, function(results) {
-        if (chrome.runtime.lastError) reject(JSON.stringify(chrome.runtime.lastError));
-        else resolve(results);
-        });
-    } catch (error) { reject(error); }
-  });
+  if (!isChrome) return browser.tabs.executeScript(details.tabs[0].id, {file: details.file});
+  else return chrome.scripting.executeScript({target: {tabId: details.tabs[0].id}, files: [details.file]});
 }
 /*
  * Highlight Table by (index)
@@ -155,9 +136,9 @@ function getTableList(tabs) {
     message
   ).then(handleMessage).catch(() => {
     // Content Script does not exists. Inject the content scripts
-    executeScriptWithPromise({file: "/inject/purify.min.js"})
+    executeScriptWithPromise({tabs: tabs, file: "/inject/purify.min.js"})
       .then(() => {
-        executeScriptWithPromise({file: "/inject/cs.js"})
+        executeScriptWithPromise({tabs: tabs, file: "/inject/cs.js"})
         .then(() => {
           // Retry the Query the active tab and get table list from content script
           sendMessageWithPromise(
