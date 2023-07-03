@@ -12,9 +12,22 @@ td.highlight, td.download {text-align: center;}
 button {
 	border:none !important;
 	outline:none !important;
+    background-color: transparent !important;
 }
 button.highlight {
 	background-image: url( '../assets/popup/Search.svg' );
+    background-size: 16px 16px;
+    height: 16px;  
+    width: 16px;
+}
+button.copy {
+	background-image: url( '../assets/popup/Copy.svg' );
+    background-size: 16px 16px;
+    height: 16px;  
+    width: 16px;
+}
+button.copySuccess {
+	background-image: url( '../assets/popup/Check_green.svg' );
     background-size: 16px 16px;
     height: 16px;  
     width: 16px;

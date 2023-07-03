@@ -43,6 +43,18 @@
 				}
 				sendResponse({event: "table-highlight-acknowledge"});
 				break;
+			// Table Copy requested from Pop-up
+			case "table-copy":
+				if (message.tableIndex !== null) {
+					console.log("Copying Table with index: " + message.tableIndex);
+					var dirtyHtml = document.getElementsByTagName("table")[message.tableIndex].outerHTML;
+					// Purify the HTML
+					var tableHtml = DOMPurify.sanitize(dirtyHtml);
+					var dataUrl = 'data:text/html,' + encodeURIComponent(tableHtml);
+					var blobTable = new Blob([tableHtml], {type: 'text/html'});
+				}
+				sendResponse({event: "table-blob", dataUrl: dataUrl});
+				break;
 			// Table Download requested from Pop-up
 			case "table-download":
 				if (message.tableIndex !== null) {

@@ -47,6 +47,14 @@ function highlightTableByIndex(index) { //Request Table Highlight to Background 
   sendMessageWithPromise(tabId, { event: "table-highlight", tableIndex: index }).then(handleMessage).catch(onError);
 }
 /*
+ * Copy Table by (index)
+ *
+ * @param {index} index of Table
+ */
+function copyTableByIndex(index) {//Request Table Copy to Background script
+  sendMessageWithPromise(tabId, { event: "table-copy", tableIndex: index }).then(handleMessage).catch(onError);
+}
+/*
  * Download Table by (index)
  *
  * @param {index} index of Table
@@ -90,6 +98,20 @@ function handleTableList(tableArray) {
       tableRowDataElem.addEventListener('click', function () { highlightTableByIndex(this.dataset.index); });
       tableRowData.appendChild(tableRowDataElem);
       tableRow.appendChild(tableRowData);
+      // Copy button <td>
+      tableRowData = document.createElement('td');
+      tableRowData.className = "copy";
+      tableRowDataElem = document.createElement('button');
+      tableRowDataElem.className = "copy";
+      tableRowDataElem.title = "Copy Table";
+      tableRowDataElem.dataset.index = index;
+      // Add Event Listener to click event of the Table Copy
+      tableRowDataElem.addEventListener('click', function () {
+        copyTableByIndex(this.dataset.index);
+        this.className = "copySuccess";
+      });
+      tableRowData.appendChild(tableRowDataElem);
+      tableRow.appendChild(tableRowData);
       // Download button <td>
       tableRowData = document.createElement('td');
       tableRowData.className = "download";
@@ -121,6 +143,55 @@ function handleMessage(request, sender, sendResponse) {
   console.log("Content Scripts => Popup Script: Event: " + request.event );
   if(request.event == "table-list") { // Got Table List from Content script
     handleTableList(request.tableArray);
+  }
+  if(request.event == "table-blob" && request.dataUrl) { // Got Table Copy Blob from Content script
+    console.log(request.dataUrl );
+    fetch(request.dataUrl).then(res => res.blob()).then(
+      (blob) => {
+        console.log(blob);
+        const type = "text/html";
+        const data = [new ClipboardItem({ [blob.type]: blob })];
+        navigator.clipboard.write(data).then(
+          () => {
+            console.log("Copied Table");
+          },
+          (err) => {
+            console.log("Unable to copy: " + err);
+          }
+        );
+      }
+    );
+    // const blob2 = async () => { const blob1 = await (await fetch(request.dataUrl)).blob(); console.log(blob1 ); }
+    // console.log(blob1 );
+    // const copyRichText = async () => {
+    //   const response = await fetch(request.dataUrl);
+    //   const blob = await response.blob();
+    //   await navigator.clipboard.write([
+    //     new ClipboardItem({ "text/html": blob }),
+    //   ]).then(
+    //       () => {
+    //       console.log("Copied Table");
+    //       },
+    //       (err) => {
+    //       console.log("Unable to copy: " + err);
+    //       }
+    //       );
+      // const content = document.getElementById("richTextInputId").innerHTML;
+      // const blob = new Blob([content], { type: "text/html" });
+      // const richTextInput = new ClipboardItem({ "text/html": blob });
+      // await navigator.clipboard.write([richTextInput]);
+    // };
+    // const data = fetch(request.dataUrl);
+		// const blob = data.blob();
+		// navigator.clipboard.write([ new ClipboardItem({ 'text/html': request.dataUrl }) ]);
+    // navigator.clipboard.write([new ClipboardItem({[request.blobTable.type]: request.blobTable})]).then(
+    //   () => {
+    //   console.log("Copied Table");
+    //   },
+    //   (err) => {
+    //   console.log("Unable to copy: " + err);
+    //   }
+    //   );
   }
 }
 /*
